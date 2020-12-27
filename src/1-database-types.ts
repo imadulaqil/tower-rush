@@ -1,10 +1,12 @@
 type UserType = {
     id: string,
     name: string,
-    exp: number
+    exp: number,
+    joinedTime: number,
+    loginCount: number
 };
 
-type UserSession = {
+type SessionType = {
     id: string,
     gameMode: string,
     startTime: number,

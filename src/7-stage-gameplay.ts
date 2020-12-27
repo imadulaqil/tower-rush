@@ -1,12 +1,13 @@
 stageGameplay = G.exec(() => {
 
 
-    return G.c('div', {
-        classes: ['stage-container'],
-        attributes: {
-            id: 'stage-gameplay'
-        }
-    });
+return G.c('div', {
+    classes: ['stage-container'],
+    attributes: {
+        id: 'stage-gameplay'
+    }
+});
+
 });
 
 onStageStart(StageType.Gameplay, () => {

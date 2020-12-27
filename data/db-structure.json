@@ -3,7 +3,9 @@
         "def234": {
             "id": "def234",
             "name": "Player234",
-            "exp": 0
+            "exp": 0,
+            "joinedTime": 0,
+            "loginCount": 0
         }
     },
     "sessions": {

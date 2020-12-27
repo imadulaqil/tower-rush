@@ -6,7 +6,7 @@ mainContainer.appendChild(gameTitle);
 changeStage(StageType.Intro);
 
 G.exec(() => {
-    let introDuration = userParams.isLoggedIn()? 700 : 1800;
+    let introDuration = 0;//userParams.isLoggedIn()? 700 : 1800;
     setTimeout(() => {
         if (userParams.isLoggedIn()) {
             if (sessionParams.sessionIdExists()) {

@@ -12,6 +12,18 @@ const G = {
     rid(length: number): string {
         return Math.random().toString(36).substr(2, length);
     },
+    /**
+     * Generate random player name
+     */
+    rname(): string {
+        return `player_${this.t()}${this.irange(1000, 10000)}`;
+    },
+    /**
+     * Converts exp value to level number
+     */
+    getLevel(exp: number): number {
+        return 1 + Math.ceil(exp / 1000);
+    },
     events: {},
     /**
      * Add event listener

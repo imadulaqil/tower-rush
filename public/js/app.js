@@ -20,6 +20,18 @@ var G = {
     rid: function (length) {
         return Math.random().toString(36).substr(2, length);
     },
+    /**
+     * Generate random player name
+     */
+    rname: function () {
+        return "player_" + this.t() + this.irange(1000, 10000);
+    },
+    /**
+     * Converts exp value to level number
+     */
+    getLevel: function (exp) {
+        return 1 + Math.ceil(exp / 1000);
+    },
     events: {},
     /**
      * Add event listener
@@ -294,8 +306,12 @@ var G = {
 "use strict";
 var userParams = {
     userId: G.gp('userId', ''),
+    userName: G.gp('userName', ''),
     userIdExists: function () {
         return this.userId !== '';
+    },
+    userNameExists: function () {
+        return this.userName !== '';
     },
     isLoggedIn: function () {
         return this.userIdExists();
@@ -307,6 +323,33 @@ var sessionParams = {
         return this.sessionId !== '';
     }
 };
+var myUser;
+if (userParams.isLoggedIn()) {
+    socket.once('users', function (users) {
+        // get my user in database
+        var user = users[userParams.userId];
+        // if exists, read its properties
+        if (user) {
+            myUser = user;
+            if (userParams.userNameExists()) {
+                myUser.name = userParams.userName;
+            }
+            myUser.loginCount++;
+        }
+        // otherwise, create new
+        else {
+            myUser = {
+                id: userParams.userId,
+                name: userParams.userNameExists() ? userParams.userName : G.rname(),
+                exp: 0,
+                joinedTime: G.t(),
+                loginCount: 1
+            };
+        }
+        socket.emit('setuser', myUser);
+        G.trigger(G, 'userinitialized');
+    });
+}
 "use strict";
 var StageType;
 (function (StageType) {
@@ -403,12 +446,31 @@ onStageStart(StageType.Register, function () {
 });
 "use strict";
 stageLobby = G.exec(function () {
+    // Setup elements
     // Title
     var title = G.c('h1', {
         innerHTML: 'Lobby'
     });
+    var userName = G.c('span', {
+    // innerHTML: userParams.userName
+    });
+    var userLevel = G.c('span', {
+    // innerHTML: '' + G.getLevel(myUser.exp)
+    });
+    var userInfo = G.c('div', {
+        children: [userLevel, userName]
+    });
+    // Logic code
+    G.on(G, 'userinitialized', function () {
+        // userName.innerHTML = myUser.name;
+        // userLevel.innerHTML = '' + G.getLevel(myUser.exp);
+        G.onEach(myUser, function (value, prop) {
+            userLevel.innerHTML += prop + ": " + value + "<br>";
+        });
+    });
+    // Return value
     return G.c('div', {
-        children: [title],
+        children: [title, userInfo],
         classes: ['stage-container'],
         attributes: {
             id: 'stage-lobby'
@@ -437,7 +499,7 @@ mainContainer.appendChild(stageGameplay);
 mainContainer.appendChild(gameTitle);
 changeStage(StageType.Intro);
 G.exec(function () {
-    var introDuration = userParams.isLoggedIn() ? 700 : 1800;
+    var introDuration = 0; //userParams.isLoggedIn()? 700 : 1800;
     setTimeout(function () {
         if (userParams.isLoggedIn()) {
             if (sessionParams.sessionIdExists()) {

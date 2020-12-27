@@ -1,0 +1,26 @@
+{
+  "name": "tower-rush",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imadulaqil/tower-rush.git"
+  },
+  "author": "imadulaqil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/imadulaqil/tower-rush/issues"
+  },
+  "homepage": "https://github.com/imadulaqil/tower-rush#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

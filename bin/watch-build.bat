@@ -1,0 +1,1 @@
+when_changed ..\build\src\*.js mergesrc

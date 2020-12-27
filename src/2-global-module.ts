@@ -111,7 +111,7 @@ const G = {
         if (options.attributes) {
             for (const name in options.attributes) {
                 const value = options.attributes[name];
-                if (e[name]) {
+                if (e[name] !== undefined) {
                     e[name] = value;
                 }
                 else {

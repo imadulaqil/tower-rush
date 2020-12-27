@@ -123,7 +123,7 @@ var G = {
         if (options.attributes) {
             for (var name_1 in options.attributes) {
                 var value = options.attributes[name_1];
-                if (e[name_1]) {
+                if (e[name_1] !== undefined) {
                     e[name_1] = value;
                 }
                 else {
@@ -447,30 +447,45 @@ onStageStart(StageType.Register, function () {
 "use strict";
 stageLobby = G.exec(function () {
     // Setup elements
-    // Title
-    var title = G.c('h1', {
-        innerHTML: 'Lobby'
-    });
-    var userName = G.c('span', {
-    // innerHTML: userParams.userName
+    var expStar = G.c('img', {
+        classes: ['exp-star'],
+        attributes: {
+            src: './assets/images/expstar.svg'
+        }
     });
     var userLevel = G.c('span', {
-    // innerHTML: '' + G.getLevel(myUser.exp)
+        classes: ['user-level']
+        // innerHTML: '' + G.getLevel(myUser.exp)
     });
+    var userName = G.c('span', {
+        classes: ['user-name']
+        // innerHTML: userParams.userName
+    });
+    // group of exp star, user level and user name
     var userInfo = G.c('div', {
-        children: [userLevel, userName]
+        children: [expStar, userLevel, userName],
+        classes: ['user-info']
+    });
+    var startButton = G.c('button', {
+        classes: ['btn', 'btn-primary', 'start-button'],
+        attributes: {
+            disabled: true
+        },
+        innerHTML: 'START'
     });
     // Logic code
     G.on(G, 'userinitialized', function () {
-        // userName.innerHTML = myUser.name;
-        // userLevel.innerHTML = '' + G.getLevel(myUser.exp);
-        G.onEach(myUser, function (value, prop) {
-            userLevel.innerHTML += prop + ": " + value + "<br>";
-        });
+        userLevel.innerHTML = '' + G.getLevel(myUser.exp);
+        userName.innerHTML = myUser.name;
+        startButton.disabled = false;
+        // Debug
+        // G.onEach(myUser, (value, prop) => {
+        //     userLevel.innerHTML += `${prop}: ${value}<br>`;
+        // });
     });
     // Return value
     return G.c('div', {
-        children: [title, userInfo],
+        children: [userInfo, startButton],
         classes: ['stage-container'],
         attributes: {
             id: 'stage-lobby'

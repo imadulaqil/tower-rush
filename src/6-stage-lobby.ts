@@ -1,35 +1,52 @@
 stageLobby = G.exec(() => {
 
 // Setup elements
-// Title
-const title = G.c('h1', {
-    innerHTML: 'Lobby'
-});
 
-const userName: HTMLSpanElement = G.c('span', {
-    // innerHTML: userParams.userName
+const expStar: HTMLImageElement = G.c('img', {
+    classes: ['exp-star'],
+    attributes: {
+        src: './assets/images/expstar.svg'
+    }
 });
 
 const userLevel: HTMLSpanElement = G.c('span', {
+    classes: ['user-level']
     // innerHTML: '' + G.getLevel(myUser.exp)
 });
 
+const userName: HTMLSpanElement = G.c('span', {
+    classes: ['user-name']
+    // innerHTML: userParams.userName
+});
+
+// group of exp star, user level and user name
 const userInfo = G.c('div', {
-    children: [userLevel, userName]
+    children: [expStar, userLevel, userName],
+    classes: ['user-info']
+});
+
+const startButton: HTMLButtonElement = G.c('button', {
+    classes: ['btn', 'btn-primary', 'start-button'],
+    attributes: {
+        disabled: true
+    },
+    innerHTML: 'START'
 });
 
 // Logic code
 G.on(G, 'userinitialized', () => {
-    // userName.innerHTML = myUser.name;
-    // userLevel.innerHTML = '' + G.getLevel(myUser.exp);
-    G.onEach(myUser, (value, prop) => {
-        userLevel.innerHTML += `${prop}: ${value}<br>`;
-    });
+    userLevel.innerHTML = '' + G.getLevel(myUser.exp);
+    userName.innerHTML = myUser.name;
+    startButton.disabled = false;
+    // Debug
+    // G.onEach(myUser, (value, prop) => {
+    //     userLevel.innerHTML += `${prop}: ${value}<br>`;
+    // });
 });
 
 // Return value
 return G.c('div', {
-    children: [title, userInfo],
+    children: [userInfo, startButton],
     classes: ['stage-container'],
     attributes: {
         id: 'stage-lobby'

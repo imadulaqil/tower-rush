@@ -1,0 +1,23 @@
+{
+    "users": {
+        "def234": {
+            "id": "def234",
+            "name": "Player234",
+            "exp": 0
+        }
+    },
+    "sessions": {
+        "abc123": {
+            "id": "abc123",
+            "gameMode": "1v1",
+            "startTime": 0,
+            "endTime": 0,
+            "users": {
+                "def234": {
+                    "id": "def234",
+                    "name": "Player234"
+                }
+            }
+        }
+    }
+}

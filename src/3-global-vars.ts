@@ -26,7 +26,7 @@ if (userParams.isLoggedIn()) {
         // get my user in database
         const user = users[userParams.userId];
         // if exists, read its properties
-        if (user) {
+        if (user !== undefined) {
             myUser = user;
             if (userParams.userNameExists()) {
                 myUser.name = userParams.userName;

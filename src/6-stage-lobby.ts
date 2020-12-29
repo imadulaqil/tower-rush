@@ -25,6 +25,11 @@ const userInfo = G.c('div', {
     classes: ['user-info']
 });
 
+// list of started users
+const startedUsersList: HTMLDivElement = G.c('div', {
+    classes: ['started-users-list']
+});
+
 const startButton: HTMLButtonElement = G.c('button', {
     classes: ['btn', 'btn-primary', 'start-button'],
     attributes: {
@@ -38,6 +43,27 @@ G.on(G, 'userinitialized', () => {
     userLevel.innerHTML = '' + G.getLevel(myUser.exp);
     userName.innerHTML = myUser.name;
     startButton.disabled = false;
+
+    startButton.onclick = () => {
+        const newSessionId = G.rid(6);
+        const params = [
+            `userId=${myUser.id}`,
+            `userName=${myUser.name}`,
+            `sessionId=${newSessionId}`
+        ];
+        G.goto(G.getUrl(...params));
+        const sessionUsers: { [id: string]: UserType } = {};
+        sessionUsers[myUser.id] = myUser;
+        const t = G.t();
+        const gameDuration = 120 * 1000;
+        socket.emit('createsession', {
+            id: newSessionId,
+            gameMode: GameMode.MP1V1,
+            startTime: t,
+            endTime: t + gameDuration,
+            users: sessionUsers
+        });
+    };
     // Debug
     // G.onEach(myUser, (value, prop) => {
     //     userLevel.innerHTML += `${prop}: ${value}<br>`;

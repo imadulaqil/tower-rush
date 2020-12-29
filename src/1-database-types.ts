@@ -13,3 +13,7 @@ type SessionType = {
     endTime: number,
     users: { [id: string]: UserType }
 };
+
+enum GameMode {
+    MP1V1 = 'MP1V1'
+};

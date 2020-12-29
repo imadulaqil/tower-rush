@@ -26,6 +26,8 @@ const writeUsersDb = (newUsersDb) => {
     });
 };
 
+const clients = {};
+
 const io = socket(server);
 
 io.on('connection', (socket) => {
@@ -46,6 +48,15 @@ socket.on('setuser', (user) => {
     });
 });
 
+
+socket.on('createsession', (newSession) => {
+    // write to db
+});
+
+console.log(io.sockets.emit);
+
+socket.on('getsession', (sessionId) => {
+});
 
 
 

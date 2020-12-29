@@ -155,6 +155,9 @@ const G = {
     getUrl(...params: string[]): string {
         return `${window.location.href.split(/[?#]/)[0]}${arguments.length > 0? `?${params.join('&')}` : ''}`;
     },
+    goto(url: string): void {
+        window.location.href = url;
+    },
     /**
      * Executes one or multiple functions given. Nice alternative to create bunch of IIFE (Immediately-invoked Function Expression)
      * Returns the return value of the last function

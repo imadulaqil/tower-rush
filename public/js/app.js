@@ -5,6 +5,11 @@ socket.once('connected', function (data) {
     console.log(data);
 });
 "use strict";
+var GameMode;
+(function (GameMode) {
+    GameMode["MP1V1"] = "MP1V1";
+})(GameMode || (GameMode = {}));
+;
 "use strict";
 /**
  * Collection of methods that are global througout all modules.
@@ -175,6 +180,9 @@ var G = {
         }
         return "" + window.location.href.split(/[?#]/)[0] + (arguments.length > 0 ? "?" + params.join('&') : '');
     },
+    goto: function (url) {
+        window.location.href = url;
+    },
     /**
      * Executes one or multiple functions given. Nice alternative to create bunch of IIFE (Immediately-invoked Function Expression)
      * Returns the return value of the last function
@@ -329,7 +337,7 @@ if (userParams.isLoggedIn()) {
         // get my user in database
         var user = users[userParams.userId];
         // if exists, read its properties
-        if (user) {
+        if (user !== undefined) {
             myUser = user;
             if (userParams.userNameExists()) {
                 myUser.name = userParams.userName;
@@ -466,6 +474,10 @@ stageLobby = G.exec(function () {
         children: [expStar, userLevel, userName],
         classes: ['user-info']
     });
+    // list of started users
+    var startedUsersList = G.c('div', {
+        classes: ['started-users-list']
+    });
     var startButton = G.c('button', {
         classes: ['btn', 'btn-primary', 'start-button'],
         attributes: {
@@ -478,6 +490,26 @@ stageLobby = G.exec(function () {
         userLevel.innerHTML = '' + G.getLevel(myUser.exp);
         userName.innerHTML = myUser.name;
         startButton.disabled = false;
+        startButton.onclick = function () {
+            var newSessionId = G.rid(6);
+            var params = [
+                "userId=" + myUser.id,
+                "userName=" + myUser.name,
+                "sessionId=" + newSessionId
+            ];
+            G.goto(G.getUrl.apply(G, params));
+            var sessionUsers = {};
+            sessionUsers[myUser.id] = myUser;
+            var t = G.t();
+            var gameDuration = 120 * 1000;
+            socket.emit('createsession', {
+                id: newSessionId,
+                gameMode: GameMode.MP1V1,
+                startTime: t,
+                endTime: t + gameDuration,
+                users: sessionUsers
+            });
+        };
         // Debug
         // G.onEach(myUser, (value, prop) => {
         //     userLevel.innerHTML += `${prop}: ${value}<br>`;
@@ -496,8 +528,26 @@ onStageStart(StageType.Lobby, function () {
     G.show(stageLobby);
 });
 "use strict";
+var mySession;
 stageGameplay = G.exec(function () {
+    var gameCanvas = G.c('canvas', {
+        classes: ['game-canvas']
+    });
+    onStageStart(StageType.Gameplay, function () {
+        var b = gameCanvas.getBoundingClientRect();
+        gameCanvas.width = b.width;
+        gameCanvas.height = b.height;
+    });
+    // LOGIC
+    G.on(G, 'userinitialized', function () {
+        if (sessionParams.sessionIdExists()) {
+            socket.once("session_" + sessionParams.sessionId, function (session) {
+                mySession = session;
+            });
+        }
+    });
     return G.c('div', {
+        children: [gameCanvas],
         classes: ['stage-container'],
         attributes: {
             id: 'stage-gameplay'
